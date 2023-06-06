@@ -1,5 +1,5 @@
 create tablespace VVS_QDATA_L5
-  datafile 'VVS_QDATA_L5.dbf'
+  datafile  Q VVS_QDATA_L5.dbf Q 
   size 10 m
   autoextend on next 5 m
   maxsize 30 m
@@ -21,7 +21,7 @@ FROM v$parameter;
 -- 3.	Получите список управляющих файлов.
 select * from v$controlfile;
 -- 4.	Сформируйте PFILE.
-create pfile = 'VVS_MyPFILE.ora' from spfile;
+create pfile =  Q VVS_MyPFILE.ora Q  from spfile;
 -- 5.	Создайте таблицу из двух столбцов, один из которых первичный ключ. Получите перечень всех сегментов. Вставьте данные в таблицу. Определите, сколько в сегменте таблицы экстентов, их размер в блоках и байтах. 
 CREATE TABLE my_table (
     id NUMBER PRIMARY KEY,
@@ -29,9 +29,9 @@ CREATE TABLE my_table (
 );
 SELECT segment_name
 FROM user_segments
-WHERE segment_type = 'TABLE';
+WHERE segment_type =  Q TABLE Q ;
 INSERT INTO my_table (id, name)
-VALUES (1, 'John');
+VALUES (1,  Q John Q );
 SELECT
     segment_name,
     extents,
@@ -40,7 +40,7 @@ SELECT
 FROM
     user_segments
 WHERE
-    segment_name = 'MY_TABLE';
+    segment_name =  Q MY_TABLE Q ;
 
 -- 6.	Получите перечень всех процессов СУБД Oracle. Для серверных процессов укажите режим подключения. Для фоновых укажите работающие в настоящий момент.
 select * from v$process;
@@ -59,7 +59,7 @@ SELECT
 FROM
     dba_sys_privs
 WHERE
-    grantee = 'SYS';
+    grantee =  Q SYS Q ;
 
 -- 10.	Получите перечень всех пользователей.
 SELECT
@@ -122,7 +122,7 @@ select * from syn_t1_2;
 
 SELECT *
 FROM ALL_SYNONYMS
-WHERE SYNONYM_NAME = 'SYN_T1' OR SYNONYM_NAME = 'SYN_T1_2';
+WHERE SYNONYM_NAME =  Q SYN_T1 Q  OR SYNONYM_NAME =  Q SYN_T1_2 Q ;
 
 -- 18.	Разработайте анонимный блок, демонстрирующий возникновение и обработку исключений WHEN TO_MANY_ROWS и NO_DATA_FOUND.
 DECLARE
@@ -136,10 +136,10 @@ BEGIN
     FROM t1
     where n1 = 1000 or n1 = 1010;
 
-    DBMS_OUTPUT.PUT_LINE('Value 1: ' || v_value1);
+    DBMS_OUTPUT.PUT_LINE( Q Value 1:  Q  || v_value1);
   EXCEPTION
     WHEN TOO_MANY_ROWS THEN
-      DBMS_OUTPUT.PUT_LINE('Too many rows found.');
+      DBMS_OUTPUT.PUT_LINE( Q Too many rows found. Q );
   END;
 
   -- Обработка исключения NO_DATA_FOUND
@@ -149,17 +149,17 @@ BEGIN
     FROM t1
     where n1 = 1030;
 
-    DBMS_OUTPUT.PUT_LINE('Value 2: ' || v_value2);
+    DBMS_OUTPUT.PUT_LINE( Q Value 2:  Q  || v_value2);
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
-      DBMS_OUTPUT.PUT_LINE('No data found.');
+      DBMS_OUTPUT.PUT_LINE( Q No data found. Q );
   END;
 END;
 
 -- 19.	Получите перечень всех файлов групп журналов повтора. 
 select * from v$logfile;
 -- 20.	Определите текущую группу журналов повтора. 
-select * from v$log where status = 'CURRENT';
+select * from v$log where status =  Q CURRENT Q ;
 -- 21.	Получите перечень контрольных файлов.
 SELECT * FROM V$controlfile;
 -- 22.	Создайте таблицу и вставьте в нее 100 записей. Найдите таблицу и ее свойства в представлениях словаря.
@@ -174,7 +174,7 @@ CREATE TABLE my_table2 (
 BEGIN
   FOR i IN 1..100 LOOP
     INSERT INTO my_table2 (id, name, age)
-    VALUES (i, 'Name ' || i, i * 2);
+    VALUES (i,  Q Name  Q  || i, i * 2);
   END LOOP;
   COMMIT;
 END;
@@ -182,22 +182,22 @@ END;
 -- Поиск таблицы и её свойств в представлениях словаря
 SELECT table_name, num_rows, last_analyzed
 FROM all_tables
-WHERE table_name = 'MY_TABLE2';
+WHERE table_name =  Q MY_TABLE2 Q ;
 
 -- 23.	Получите список сегментов табличного пространства. 
 SELECT segment_name, segment_type
 FROM dba_segments
-WHERE tablespace_name = 'VVS_QDATA_L5';
+WHERE tablespace_name =  Q VVS_QDATA_L5 Q ;
 
 -- 24.	Выведите список всех объектов, доступных пользователю. 
 SELECT object_name, object_type
 FROM all_objects
-WHERE owner = 'SYS';
+WHERE owner =  Q SYS Q ;
 
 -- 25.	Вычислите количество блоков, занятых таблицей.
 SELECT blocks
 FROM dba_tables
-WHERE table_name = 'MY_TABLE2';
+WHERE table_name =  Q MY_TABLE2 Q ;
 
 -- 26.	Выведите список текущих сессий. 
 SELECT sid, serial#, username, status
@@ -220,7 +220,7 @@ GRANT CREATE DATABASE LINK TO C##VVS;
 CREATE DATABASE LINK DB13 
    CONNECT TO C##VVS
    IDENTIFIED BY PASSWORD
-   USING 'db13';
+   USING  Q db13 Q ;
 
 -- 30.	Продемонстрируйте эскалацию исключения.
 BEGIN
@@ -247,7 +247,7 @@ EXCEPTION
     -- Обработка исключения на более высоком уровне
     -- Возможно, выполнение дополнительных действий
     -- ...
-    DBMS_OUTPUT.PUT_LINE('Ошибка: ' || SQLERRM);
+    DBMS_OUTPUT.PUT_LINE( Q Ошибка:  Q  || SQLERRM);
 END;
 
 
@@ -274,20 +274,20 @@ BEGIN
         WHERE ord.CUST = v_customer_id
     )
     LOOP
-        DBMS_OUTPUT.PUT_LINE('Order Number: ' || order_row.ORDER_NUM || ', Product: ' || order_row.DESCRIPTION || ', Price: ' || order_row.PRICE);
+        DBMS_OUTPUT.PUT_LINE( Q Order Number:  Q  || order_row.ORDER_NUM ||  Q , Product:  Q  || order_row.DESCRIPTION ||  Q , Price:  Q  || order_row.PRICE);
         v_total_amount := v_total_amount + order_row.PRICE;
     END LOOP;
 
-    DBMS_OUTPUT.PUT_LINE('Total Price for Customer ' || p_customer_name || ': ' || v_total_amount);
+    DBMS_OUTPUT.PUT_LINE( Q Total Price for Customer  Q  || p_customer_name ||  Q :  Q  || v_total_amount);
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Customer not found.');
+        DBMS_OUTPUT.PUT_LINE( Q Customer not found. Q );
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE( Q An error occurred:  Q  || SQLERRM);
 END;
 /
 
-exec GET_CUSTOMER_ORDERS_TOTAL('JCP Inc.');
+exec GET_CUSTOMER_ORDERS_TOTAL( Q JCP Inc. Q );
 
 
 -- 2.	Создайте функцию, которая подсчитывает количество заказов покупателя за определенный период. Параметры – покупатель, дата начала периода, дата окончания периода.
@@ -324,8 +324,8 @@ END;
 DECLARE
     v_order_count INTEGER;
 BEGIN
-    v_order_count := COUNT_CUSTOMER_ORDERS('JCP Inc.', DATE '2007-01-01', DATE '2023-12-31');
-    DBMS_OUTPUT.PUT_LINE('Number of orders: ' || v_order_count);
+    v_order_count := COUNT_CUSTOMER_ORDERS( Q JCP Inc. Q , DATE  Q 2007-01-01 Q , DATE  Q 2023-12-31 Q );
+    DBMS_OUTPUT.PUT_LINE( Q Number of orders:  Q  || v_order_count);
 END;
 /
 
@@ -350,18 +350,18 @@ BEGIN
         ORDER BY O.AMOUNT ASC
     )
     LOOP
-        DBMS_OUTPUT.PUT_LINE('Product: ' || purchase_row.DESCRIPTION || ', Sales Amount: ' || purchase_row.AMOUNT);
+        DBMS_OUTPUT.PUT_LINE( Q Product:  Q  || purchase_row.DESCRIPTION ||  Q , Sales Amount:  Q  || purchase_row.AMOUNT);
     END LOOP;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Customer not found or no purchases found.');
+        DBMS_OUTPUT.PUT_LINE( Q Customer not found or no purchases found. Q );
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE( Q An error occurred:  Q  || SQLERRM);
 END;
 /
 
 BEGIN
-    GET_CUSTOMER_PURCHASES('JCP Inc.');
+    GET_CUSTOMER_PURCHASES( Q JCP Inc. Q );
 END;
 /
 
@@ -400,8 +400,8 @@ END;
 DECLARE
     v_customer_id INTEGER;
 BEGIN
-    v_customer_id := ADD_CUSTOMER('123', 103, 1000);
-    DBMS_OUTPUT.PUT_LINE('Customer ID: ' || v_customer_id);
+    v_customer_id := ADD_CUSTOMER( Q 123 Q , 103, 1000);
+    DBMS_OUTPUT.PUT_LINE( Q Customer ID:  Q  || v_customer_id);
 END;
 /
 select * from customers;
@@ -423,18 +423,18 @@ BEGIN
         ORDER BY TOTAL_SALES DESC
     )
     LOOP
-        DBMS_OUTPUT.PUT_LINE('Customer: ' || customer_row.COMPANY || ', Total Sales: ' || customer_row.TOTAL_SALES);
+        DBMS_OUTPUT.PUT_LINE( Q Customer:  Q  || customer_row.COMPANY ||  Q , Total Sales:  Q  || customer_row.TOTAL_SALES);
     END LOOP;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No customers found.');
+        DBMS_OUTPUT.PUT_LINE( Q No customers found. Q );
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE( Q An error occurred:  Q  || SQLERRM);
 END;
 /
 
 BEGIN
-    GET_CUSTOMERS_BY_TOTAL_SALES(DATE '2007-01-01', DATE '2023-12-31');
+    GET_CUSTOMERS_BY_TOTAL_SALES(DATE  Q 2007-01-01 Q , DATE  Q 2023-12-31 Q );
 END;
 /
 
@@ -461,8 +461,8 @@ END;
 DECLARE
     v_count INTEGER;
 BEGIN
-    v_count := COUNT_ORDERED_PRODUCTS(DATE '2007-01-01', DATE '2023-12-31');
-    DBMS_OUTPUT.PUT_LINE('Total Ordered Products: ' || v_count);
+    v_count := COUNT_ORDERED_PRODUCTS(DATE  Q 2007-01-01 Q , DATE  Q 2023-12-31 Q );
+    DBMS_OUTPUT.PUT_LINE( Q Total Ordered Products:  Q  || v_count);
 END;
 /
 
@@ -481,17 +481,17 @@ BEGIN
         WHERE O.ORDER_DATE BETWEEN p_start_date AND p_end_date
     )
     LOOP
-        DBMS_OUTPUT.PUT_LINE('Customer ID: ' || customer_row.CUST_NUM || ', Company: ' || customer_row.COMPANY);
+        DBMS_OUTPUT.PUT_LINE( Q Customer ID:  Q  || customer_row.CUST_NUM ||  Q , Company:  Q  || customer_row.COMPANY);
     END LOOP;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('No customers found with orders in the specified period.');
+        DBMS_OUTPUT.PUT_LINE( Q No customers found with orders in the specified period. Q );
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE( Q An error occurred:  Q  || SQLERRM);
 END;
 /
 BEGIN
-    GET_CUSTOMERS_WITH_ORDERS(DATE '2007-01-01', DATE '2023-12-31');
+    GET_CUSTOMERS_WITH_ORDERS(DATE  Q 2007-01-01 Q , DATE  Q 2023-12-31 Q );
 END;
 /
 
@@ -517,8 +517,8 @@ END;
 DECLARE
     v_count INTEGER;
 BEGIN
-    v_count := COUNT_CUSTOMERS_OF_PRODUCT('2A45C');
-    DBMS_OUTPUT.PUT_LINE('Total Customers of Product: ' || v_count);
+    v_count := COUNT_CUSTOMERS_OF_PRODUCT( Q 2A45C Q );
+    DBMS_OUTPUT.PUT_LINE( Q Total Customers of Product:  Q  || v_count);
 END;
 /
 
@@ -535,19 +535,19 @@ BEGIN
     
     -- Проверяем, были ли изменения
     IF SQL%ROWCOUNT = 0 THEN
-        DBMS_OUTPUT.PUT_LINE('Product not found or no changes made.');
+        DBMS_OUTPUT.PUT_LINE( Q Product not found or no changes made. Q );
     ELSE
-        DBMS_OUTPUT.PUT_LINE('Product price increased by 10%.');
+        DBMS_OUTPUT.PUT_LINE( Q Product price increased by 10%. Q );
     END IF;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Product not found.');
+        DBMS_OUTPUT.PUT_LINE( Q Product not found. Q );
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE( Q An error occurred:  Q  || SQLERRM);
 END;
 /
 BEGIN
-    INCREASE_PRODUCT_PRICE('Ratchet Link');
+    INCREASE_PRODUCT_PRICE( Q Ratchet Link Q );
 END;
 /
 
@@ -576,8 +576,8 @@ END;
 DECLARE
     v_count INTEGER;
 BEGIN
-    v_count := COUNT_ORDERS_BY_CUSTOMER_YEAR('JCP Inc.', 2008);
-    DBMS_OUTPUT.PUT_LINE('Total Orders for Customer in Year: ' || v_count);
+    v_count := COUNT_ORDERS_BY_CUSTOMER_YEAR( Q JCP Inc. Q , 2008);
+    DBMS_OUTPUT.PUT_LINE( Q Total Orders for Customer in Year:  Q  || v_count);
 END;
 /
 
@@ -606,11 +606,11 @@ EXCEPTION
     WHEN OTHERS THEN
         -- Откатываем транзакцию в случае ошибки
         ROLLBACK;
-        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE( Q An error occurred:  Q  || SQLERRM);
 END;
 /
 BEGIN
-    ADD_ORDER(1, DATE '2023-01-01', 1, 303030, 'MFR', 'PRODUCT', 10, 100.00);
+    ADD_ORDER(1, DATE  Q 2023-01-01 Q , 1, 303030,  Q MFR Q ,  Q PRODUCT Q , 10, 100.00);
 END;
 /
 CREATE OR REPLACE TRIGGER ORDER_INTEGRITY_TRIGGER
@@ -627,15 +627,15 @@ BEGIN
 
     IF v_product_qty IS NULL OR v_product_qty < :NEW.QTY THEN
         -- Выбрасываем исключение, если товар не найден или количество недостаточно
-        RAISE_APPLICATION_ERROR(-20001, 'Invalid product or insufficient quantity.');
+        RAISE_APPLICATION_ERROR(-20001,  Q Invalid product or insufficient quantity. Q );
     END IF;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         -- Выбрасываем исключение, если товар не найден
-        RAISE_APPLICATION_ERROR(-20002, 'Invalid product.');
+        RAISE_APPLICATION_ERROR(-20002,  Q Invalid product. Q );
     WHEN OTHERS THEN
         -- Выбрасываем исключение для любых других ошибок
-        RAISE_APPLICATION_ERROR(-20003, 'An error occurred: ' || SQLERRM);
+        RAISE_APPLICATION_ERROR(-20003,  Q An error occurred:  Q  || SQLERRM);
 END;
 /
 
@@ -651,15 +651,15 @@ IS
 BEGIN
     -- Открываем курсор для возвращения результата
     OPEN v_cursor FOR
-        SELECT TO_CHAR(O.ORDER_DATE, 'YYYY-MM') AS MONTH,
+        SELECT TO_CHAR(O.ORDER_DATE,  Q YYYY-MM Q ) AS MONTH,
                COUNT(*) AS ORDER_COUNT
         FROM ORDERS O
         JOIN CUSTOMERS C ON O.CUST = C.CUST_NUM
         WHERE C.COMPANY = p_customer
           AND O.ORDER_DATE >= p_start_date
           AND O.ORDER_DATE <= p_end_date
-        GROUP BY TO_CHAR(O.ORDER_DATE, 'YYYY-MM')
-        ORDER BY TO_CHAR(O.ORDER_DATE, 'YYYY-MM');
+        GROUP BY TO_CHAR(O.ORDER_DATE,  Q YYYY-MM Q )
+        ORDER BY TO_CHAR(O.ORDER_DATE,  Q YYYY-MM Q );
 
     RETURN v_cursor;
 EXCEPTION
@@ -677,13 +677,13 @@ DECLARE
     v_month VARCHAR2(7);
     v_order_count NUMBER;
 BEGIN
-    v_result := COUNT_ORDERS_BY_CUSTOMER_MONTHLY('JCP Inc.', DATE '2007-01-01', DATE '2023-12-31');
+    v_result := COUNT_ORDERS_BY_CUSTOMER_MONTHLY( Q JCP Inc. Q , DATE  Q 2007-01-01 Q , DATE  Q 2023-12-31 Q );
 
     -- Извлекаем данные из курсора и выводим результат
     LOOP
         FETCH v_result INTO v_month, v_order_count;
         EXIT WHEN v_result%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE('Month: ' || v_month || ', Order Count: ' || v_order_count);
+        DBMS_OUTPUT.PUT_LINE( Q Month:  Q  || v_month ||  Q , Order Count:  Q  || v_order_count);
     END LOOP;
 
     -- Закрываем курсор
@@ -709,12 +709,12 @@ BEGIN
         ORDER BY P.QTY_ON_HAND DESC
     )
     LOOP
-        DBMS_OUTPUT.PUT_LINE('MFR_ID: ' || prod.MFR_ID || ', PRODUCT_ID: ' || prod.PRODUCT_ID || ', DESCRIPTION: ' || prod.DESCRIPTION || ', QTY_ON_HAND: ' || prod.QTY_ON_HAND);
+        DBMS_OUTPUT.PUT_LINE( Q MFR_ID:  Q  || prod.MFR_ID ||  Q , PRODUCT_ID:  Q  || prod.PRODUCT_ID ||  Q , DESCRIPTION:  Q  || prod.DESCRIPTION ||  Q , QTY_ON_HAND:  Q  || prod.QTY_ON_HAND);
     END LOOP;
 EXCEPTION
     WHEN OTHERS THEN
         -- Обработка ошибки
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE( Q Error:  Q  || SQLERRM);
 END;
 /
 BEGIN
@@ -734,8 +734,8 @@ BEGIN
     SELECT COUNT(*) INTO v_order_count
     FROM ORDERS O
     JOIN CUSTOMERS C ON O.CUST = C.CUST_NUM
-    WHERE (TO_CHAR(O.ORDER_DATE, 'YYYY') = TO_CHAR(p_year) OR p_year IS NULL)
-      AND (C.COMPANY LIKE '%' || p_customer_name || '%' OR C.CUST_NUM LIKE '%' || p_customer_name || '%');
+    WHERE (TO_CHAR(O.ORDER_DATE,  Q YYYY Q ) = TO_CHAR(p_year) OR p_year IS NULL)
+      AND (C.COMPANY LIKE  Q % Q  || p_customer_name ||  Q % Q  OR C.CUST_NUM LIKE  Q % Q  || p_customer_name ||  Q % Q );
 
     RETURN v_order_count;
 EXCEPTION
@@ -747,13 +747,13 @@ END;
 DECLARE
     v_order_count NUMBER;
 BEGIN
-    v_order_count := COUNT_ORDERS_BY_CUSTOMER_YEAR(2007, 'JCP Inc.');
+    v_order_count := COUNT_ORDERS_BY_CUSTOMER_YEAR(2007,  Q JCP Inc. Q );
 
-    DBMS_OUTPUT.PUT_LINE('Order Count: ' || v_order_count);
+    DBMS_OUTPUT.PUT_LINE( Q Order Count:  Q  || v_order_count);
 EXCEPTION
     WHEN OTHERS THEN
         -- В случае ошибки, выводим сообщение об ошибке
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE( Q Error:  Q  || SQLERRM);
 END;
 /
 
@@ -766,24 +766,24 @@ IS
     v_sort_query VARCHAR2(200);
     v_result_string VARCHAR2(200);
     CURSOR c_orders IS
-        SELECT * FROM ORDERS ORDER BY p_column_name || ' ' || p_sort_order;
+        SELECT * FROM ORDERS ORDER BY p_column_name ||  Q   Q  || p_sort_order;
 BEGIN
     FOR rec IN c_orders
     LOOP
         -- Форматирование и вывод результатов
-        v_result_string := rec.ORDER_NUM || ' ' || rec.ORDER_DATE || ' ' || rec.PRODUCT; 
+        v_result_string := rec.ORDER_NUM ||  Q   Q  || rec.ORDER_DATE ||  Q   Q  || rec.PRODUCT; 
         DBMS_OUTPUT.PUT_LINE(v_result_string);
     END LOOP;
 EXCEPTION
     WHEN OTHERS THEN
         -- Обработка ошибки
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE( Q Error:  Q  || SQLERRM);
 END;
 /
 
 
 BEGIN
-    SORT_TABLE('ORDER_DATE', 'ASC');
+    SORT_TABLE( Q ORDER_DATE Q ,  Q ASC Q );
 END;
 /
 SELECT * FROM ORDERS ORDER BY ORDER_DATE ASC;
